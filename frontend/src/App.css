@@ -1,0 +1,86 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.main-body {
+  padding: 10%;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.todo-container {
+  background-color: rgb(255, 255, 255);
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: rgb(0, 61, 184);
+  padding: 5% 2%;
+}
+
+.addbtn {
+  margin-top: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+input[type="text"] {
+  background: none;
+  border: none;
+  font-size: large;
+  padding: 10px;
+  width: 40em;
+}
+
+.done {
+  color: rgba(0, 0, 0, 0.3) !important;
+  text-decoration: line-through;
+}
+
+h2 {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: black;
+  font-size: 300%;
+  margin-bottom: 2px;
+  letter-spacing: 0.4rem;
+}
+
+h3 {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  text-transform: uppercase;
+  color: rgb(47, 46, 46);
+  margin-top: 2px;
+}
