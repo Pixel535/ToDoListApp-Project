@@ -12,15 +12,21 @@ public class Task {
     private String title;
     private LocalDate dueDate;
     private boolean completed;
+    private String userId;
 
     public Task() {}
 
-    public Task(String id, String title, LocalDate dueDate, boolean completed) {
+    public Task(String id, String title, LocalDate dueDate, boolean completed, String userId) {
         this.id = id;
         this.title = title;
         this.dueDate = dueDate;
         this.completed = completed;
+        this.userId = userId;
     }
+
+    public String getUserId() { return userId; }
+
+    public void setUserId(String userId) { this.userId = userId; }
 
     public String getId() {
         return id;

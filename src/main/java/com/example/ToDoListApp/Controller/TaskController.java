@@ -12,31 +12,31 @@ import java.util.Optional;
 public class TaskController {
 
     @Autowired
-    private TaskService service;
+    private TaskService taskService;
 
     @GetMapping
-    public List<Task> getAllTasks() {
-        return service.getAllTasks();
+    public List<Task> getAllTasks(@RequestHeader("userId") String userId) {
+        return taskService.getAllTasks(userId);
     }
 
     @GetMapping("/{id}")
     public Optional<Task> getTaskById(@PathVariable String id) {
-        return service.getTaskById(id);
+        return taskService.getTaskById(id);
     }
 
     @PostMapping
-    public Task createTask(@RequestBody Task task) {
-        return service.saveTask(task);
+    public Task createTask(@RequestBody Task task, @RequestHeader("userId") String userId) {
+        return taskService.saveTask(task, userId);
     }
 
-    @PutMapping("/{id}")
-    public Task updateTask(@PathVariable String id, @RequestBody Task task) {
-        task.setId(id);
-        return service.saveTask(task);
+    @PutMapping("/{taskId}")
+    public Task updateTask(@PathVariable String taskId, @RequestBody Task task, @RequestHeader("userId") String userId) {
+        task.setId(taskId);
+        return taskService.updateTask(task, userId);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteTask(@PathVariable String id) {
-        service.deleteTask(id);
+    @DeleteMapping("/{taskId}")
+    public void deleteTask(@PathVariable String taskId, @RequestHeader("userId") String userId) {
+        taskService.deleteTask(taskId, userId);
     }
 }
