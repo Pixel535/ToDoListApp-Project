@@ -19,6 +19,7 @@ public class User {
 
     @DocumentReference
     private List<Task> tasks;
+    private boolean premiumUser;
 
     public User() {}
 
@@ -28,6 +29,10 @@ public class User {
         this.password = password;
         this.tasks = tasks;
     }
+
+    public boolean isPremiumUser() { return premiumUser; }
+
+    public void setPremiumUser(boolean premiumUser) { this.premiumUser = premiumUser; }
 
     public String getId() { return id; }
 

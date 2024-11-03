@@ -1,3 +1,7 @@
+html, body, #root, .wrapper {
+  height:100%;
+}
+
 .App {
   text-align: center;
 }
@@ -8,9 +12,11 @@
 }
 
 .main-body {
-  padding: 10%;
+background-color: #fff;
+    color: #000;
   padding-top: 0;
   padding-bottom: 0;
+  height:100%;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -108,4 +114,21 @@ h3 {
   text-transform: uppercase;
   color: rgb(47, 46, 46);
   margin-top: 2px;
+}
+
+
+.main-body.dark-mode {
+    background-color: #333;
+    color: #fff;
+}
+
+.main-body.dark-mode .todo-container {
+    border-color: #444;
+    background-color: #333;
+    color: #fff;
+}
+
+.main-body.dark-mode button {
+    background-color: #555;
+    color: #fff;
 }

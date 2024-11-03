@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { MDBContainer, MDBInput } from 'mdb-react-ui-kit';
 import Button from "@mui/material/Button";
 
-function LoginPage({ setJwt, setUsername, setUserId }) {
+function LoginPage({ setJwt, setUsername, setUserId, setPremiumUser }) {
     const [username, setLocalUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -20,9 +20,15 @@ function LoginPage({ setJwt, setUsername, setUserId }) {
             const response = await axios.post('http://localhost:8080/auth/signin', { username, password });
             console.log('Login successful:', response.data);
 
+            localStorage.setItem("jwt", response.data.jwt);
+            localStorage.setItem("username", username);
+            localStorage.setItem("userId", response.data.userId);
+            localStorage.setItem("premiumUser", response.data.premiumUser);
+
             setJwt(response.data.jwt);
             setUsername(username);
             setUserId(response.data.userId);
+            setPremiumUser(response.data.premiumUser);
 
             navigate('/tasks');
         } catch (error) {

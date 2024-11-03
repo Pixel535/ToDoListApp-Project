@@ -3,23 +3,27 @@ import Task from "./Task";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 
-function TasksPage({ jwt, userId, username }) {
+function TasksPage({ jwt, userId, username, premiumUser }) {
     const [tasks, setTasks] = useState([]);
+    const [isDarkMode, setIsDarkMode] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (jwt) {
-            fetch("http://localhost:8080/api/tasks", {
-                headers: {
-                    "Authorization": `Bearer ${jwt}`,
-                    "Content-Type": "application/json",
-                    "userId": userId
-                }
-            })
-            .then((response) => response.json())
-            .then((data) => setTasks(data));
+        if (!jwt) {
+            navigate("/");
+            return;
         }
-    }, [jwt, userId]);
+
+        fetch("http://localhost:8080/api/tasks", {
+            headers: {
+                "Authorization": `Bearer ${jwt}`,
+                "Content-Type": "application/json",
+                "userId": userId
+            }
+        })
+        .then((response) => response.json())
+        .then((data) => setTasks(data));
+    }, [jwt, userId, navigate]);
 
     function addNewTask() {
         const newTask = { title: "New Task", description: "", completed: false };
@@ -43,18 +47,38 @@ function TasksPage({ jwt, userId, username }) {
 
     function handleLogout() {
         localStorage.removeItem("jwt");
+        localStorage.removeItem("username");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("premiumUser");
         navigate("/");
     }
 
+    function handlePayForPremium() {
+        navigate("/paymentInfo");
+    }
+
+    function toggleDarkMode() {
+            setIsDarkMode(!isDarkMode);
+    }
+
     return (
-        <div className="main-body">
+        <div className={`main-body ${isDarkMode ? "dark-mode" : ""}`}>
             <div className="todo-container">
                 <h2 className="text-center">To Do List</h2>
-                <p className="text-center">Hello, {username}!</p>
+                <p className="text-center">Hello, {username}! Are you premium ? [{premiumUser ? "Yes" : "No"}]</p>
                 <div className="addbtn">
                     <Button variant="contained" onClick={addNewTask}>
                         Add task
                     </Button>
+                    {premiumUser ? (
+                        <Button variant="contained" color="secondary" onClick={toggleDarkMode}>
+                            {isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                        </Button>
+                    ) : (
+                        <Button variant="contained" color="primary" onClick={handlePayForPremium}>
+                            Pay for Dark Mode
+                        </Button>
+                    )}
                     <Button variant="contained" color="secondary" onClick={handleLogout}>
                         Log Out
                     </Button>

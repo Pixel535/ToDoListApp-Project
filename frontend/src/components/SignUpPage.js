@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { MDBContainer, MDBInput } from 'mdb-react-ui-kit';
 import Button from "@mui/material/Button";
 
-function SignupPage({ setJwt, setUsername, setUserId }) {
+function SignupPage({ setJwt, setUsername, setUserId, setPremiumUser }) {
     const [username, setLocalUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -32,6 +32,7 @@ function SignupPage({ setJwt, setUsername, setUserId }) {
             setJwt(response.data.jwt);
             setUsername(username);
             setUserId(response.data.userId);
+            setPremiumUser(response.data.premiumUser);
 
             navigate('/tasks');
         } catch (error) {

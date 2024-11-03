@@ -38,19 +38,21 @@ public class UserController {
 
         User existingUser = userRepository.findByUsername(username);
         if (existingUser != null) {
-            return new ResponseEntity<>(new AuthResponse(null, "Username already exists", false, existingUser.getId()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new AuthResponse(null, "Username already exists", false, existingUser.getId(), existingUser.isPremiumUser()), HttpStatus.BAD_REQUEST);
         }
 
         user.setPassword(passwordEncoder.encode(password));
+        user.setPremiumUser(false);
         User savedUser = userRepository.save(user);
         String userId = savedUser.getId();
+        boolean isPremiumUser = savedUser.isPremiumUser();
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String token = JwtProvider.generateToken(authentication);
 
-        AuthResponse authResponse = new AuthResponse(token, "Registration successful", true, userId);
+        AuthResponse authResponse = new AuthResponse(token, "Registration successful", true, userId, isPremiumUser);
         return new ResponseEntity<>(authResponse, HttpStatus.OK);
     }
 
@@ -60,12 +62,13 @@ public class UserController {
         String password = loginRequest.getPassword();
         User foundUser = userRepository.findByUsername(username);
         String userId = foundUser.getId();
+        boolean isPremiumUser = foundUser.isPremiumUser();
 
         Authentication authentication = authenticate(username, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String token = JwtProvider.generateToken(authentication);
-        AuthResponse authResponse = new AuthResponse(token, "Login successful", true, userId);
+        AuthResponse authResponse = new AuthResponse(token, "Login successful", true, userId, isPremiumUser);
 
         return new ResponseEntity<>(authResponse, HttpStatus.OK);
     }

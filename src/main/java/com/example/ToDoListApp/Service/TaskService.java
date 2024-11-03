@@ -37,7 +37,7 @@ public class TaskService {
     public Task updateTask(Task updatedTask, String userId) {
         Optional<Task> taskOptional = taskRepository.findById(updatedTask.getId());
         if (taskOptional.isPresent() && taskOptional.get().getUserId().equals(userId)) {
-            updatedTask.setUserId(userId); // Ensure the task retains its userId
+            updatedTask.setUserId(userId);
             return taskRepository.save(updatedTask);
         } else {
             throw new RuntimeException("Task not found or access denied");
