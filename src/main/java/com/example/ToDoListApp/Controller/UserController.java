@@ -38,7 +38,7 @@ public class UserController {
 
         User existingUser = userRepository.findByUsername(username);
         if (existingUser != null) {
-            return new ResponseEntity<>(new AuthResponse(null, "Username already exists", false, existingUser.getId(), existingUser.isPremiumUser()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new AuthResponse(null, "Username already exists", false, existingUser.getId(), existingUser.isPremiumUser(), username), HttpStatus.BAD_REQUEST);
         }
 
         user.setPassword(passwordEncoder.encode(password));
@@ -52,7 +52,7 @@ public class UserController {
 
         String token = JwtProvider.generateToken(authentication);
 
-        AuthResponse authResponse = new AuthResponse(token, "Registration successful", true, userId, isPremiumUser);
+        AuthResponse authResponse = new AuthResponse(token, "Registration successful", true, userId, isPremiumUser, username);
         return new ResponseEntity<>(authResponse, HttpStatus.OK);
     }
 
@@ -68,7 +68,7 @@ public class UserController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String token = JwtProvider.generateToken(authentication);
-        AuthResponse authResponse = new AuthResponse(token, "Login successful", true, userId, isPremiumUser);
+        AuthResponse authResponse = new AuthResponse(token, "Login successful", true, userId, isPremiumUser, username);
 
         return new ResponseEntity<>(authResponse, HttpStatus.OK);
     }

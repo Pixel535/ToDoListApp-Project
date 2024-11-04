@@ -4,16 +4,26 @@ package com.example.ToDoListApp.Security;
 public class AuthResponse {
     private String jwt;
     private String message;
+    private String username;
     private Boolean status;
     private String userId;
     private boolean premiumUser;
 
-    public AuthResponse(String jwt, String message, Boolean status, String userId, boolean premiumUser) {
+    public AuthResponse(String jwt, String message, Boolean status, String userId, boolean premiumUser, String username) {
         this.jwt = jwt;
         this.message = message;
         this.status = status;
         this.userId = userId;
         this.premiumUser = premiumUser;
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public boolean isPremiumUser() {

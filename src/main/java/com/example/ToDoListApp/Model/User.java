@@ -17,17 +17,14 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @DocumentReference
-    private List<Task> tasks;
     private boolean premiumUser;
 
     public User() {}
 
-    public User(String username, String id, String password, List<Task> tasks) {
+    public User(String username, String id, String password) {
         this.username = username;
         this.id = id;
         this.password = password;
-        this.tasks = tasks;
     }
 
     public boolean isPremiumUser() { return premiumUser; }
@@ -45,8 +42,4 @@ public class User {
     public String getPassword() { return password; }
 
     public void setPassword(String password) { this.password = password; }
-
-    public List<Task> getTasks() { return tasks; }
-
-    public void setTasks(List<Task> tasks) { this.tasks = tasks; }
 }
