@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class PayPalService {
@@ -21,7 +22,7 @@ public class PayPalService {
         Amount amount = new Amount();
         amount.setCurrency(currency);
         total = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        amount.setTotal(String.format("%.3f", total));
+        amount.setTotal(String.format(Locale.US,"%.2f", total));
 
         Transaction transaction = new Transaction();
         transaction.setDescription(description);
