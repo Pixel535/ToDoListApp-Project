@@ -1,8 +1,10 @@
 package com.example.todoapp.Adapter;
 
 import android.app.DatePickerDialog;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,11 +26,18 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     private List<Task> taskList;
     private TaskActionsListener listener;
+    private boolean isDarkModeEnabled;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
-    public TaskAdapter(List<Task> taskList, TaskActionsListener listener) {
+    public TaskAdapter(List<Task> taskList, TaskActionsListener listener, boolean isDarkModeEnabled) {
         this.taskList = taskList;
         this.listener = listener;
+        this.isDarkModeEnabled = isDarkModeEnabled;
+    }
+
+    public void setDarkModeEnabled(boolean isDarkModeEnabled) {
+        this.isDarkModeEnabled = isDarkModeEnabled;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -46,11 +55,29 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         holder.taskCompleted.setOnCheckedChangeListener(null);
         holder.taskCompleted.setChecked(task.isCompleted());
 
+        int backgroundColor = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            backgroundColor = isDarkModeEnabled ?
+                    holder.itemView.getResources().getColor(R.color.dark_background_color, holder.itemView.getContext().getTheme()) :
+                    holder.itemView.getResources().getColor(R.color.light_background_color, holder.itemView.getContext().getTheme());
+        }
+
+        int textColor = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            textColor = isDarkModeEnabled ?
+                    holder.itemView.getResources().getColor(R.color.dark_text_color, holder.itemView.getContext().getTheme()) :
+                    holder.itemView.getResources().getColor(R.color.light_text_color, holder.itemView.getContext().getTheme());
+        }
+
+        holder.taskTitle.setTextColor(textColor);
+        holder.dueDateTextView.setTextColor(textColor);
+        holder.taskCompleted.setButtonTintList(ColorStateList.valueOf(textColor));
+
+        holder.itemView.setBackgroundColor(backgroundColor);
+
         if (task.isCompleted()) {
-            holder.taskTitle.setTextColor(Color.parseColor("#4D000000"));
             holder.taskTitle.setPaintFlags(holder.taskTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
-            holder.taskTitle.setTextColor(Color.BLACK);
             holder.taskTitle.setPaintFlags(holder.taskTitle.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
         }
 

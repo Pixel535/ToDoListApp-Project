@@ -1,26 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
+            android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:padding="8dp"
+            tools:ignore="MissingConstraints">
 
         <CheckBox
             android:id="@+id/taskCompleted"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/light_text_color"/>
 
         <EditText
             android:id="@+id/taskTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Task Title" />
+            android:hint="Task Title"
+            android:textColor="@color/light_text_color"/>
 
         <TextView
             android:id="@+id/dueDateTextView"
@@ -30,7 +35,7 @@
             android:focusable="true"
             android:padding="8dp"
             android:text="No date set"
-            android:textColor="#000000" />
+            android:textColor="@color/light_text_color" />
 
         <ImageButton
             android:id="@+id/deleteTaskButton"

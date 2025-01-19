@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 
 import android.content.Intent;
@@ -16,11 +17,16 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.example.todoapp.Adapter.TaskAdapter;
 import com.example.todoapp.Model.Task;
 import com.example.todoapp.Network.RetrofitClient;
 import com.example.todoapp.Network.TaskService;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.Call;
@@ -40,6 +46,8 @@ public class TasksActivity extends Activity implements TaskAdapter.TaskActionsLi
     private RecyclerView tasksRecyclerView;
     private Button payForDarkModeButton;
     private Button toggleDarkModeButton;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private boolean isDarkModeEnabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +64,7 @@ public class TasksActivity extends Activity implements TaskAdapter.TaskActionsLi
 
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        taskAdapter = new TaskAdapter(tasks, this);
+        taskAdapter = new TaskAdapter(tasks, this, isDarkModeEnabled);
         tasksRecyclerView.setAdapter(taskAdapter);
 
         emptyListMessage = findViewById(R.id.emptyListMessage);
@@ -83,6 +91,14 @@ public class TasksActivity extends Activity implements TaskAdapter.TaskActionsLi
         String greetingText = "Hello, " + username + "! Are you premium [" + premiumStatus + "]";
         userGreeting.setText(greetingText);
 
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            loadTasks();
+            swipeRefreshLayout.setRefreshing(false);
+        });
+
+
         loadTasks();
     }
 
@@ -91,20 +107,31 @@ public class TasksActivity extends Activity implements TaskAdapter.TaskActionsLi
         ConstraintLayout rootLayout = findViewById(R.id.rootLayout);
         TextView tasksHeader = findViewById(R.id.tasksHeader);
         TextView userGreeting = findViewById(R.id.userGreeting);
+        RecyclerView tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
 
         if (currentText.equals("Switch to Dark Mode")) {
-            rootLayout.setBackgroundColor(Color.BLACK);
-            tasksHeader.setTextColor(Color.WHITE);
-            userGreeting.setTextColor(Color.WHITE);
-
+            isDarkModeEnabled = true;
             toggleDarkModeButton.setText("Switch to Light Mode");
         } else {
-            rootLayout.setBackgroundColor(Color.WHITE);
-            tasksHeader.setTextColor(Color.BLACK);
-            userGreeting.setTextColor(Color.BLACK);
-
+            isDarkModeEnabled = false;
             toggleDarkModeButton.setText("Switch to Dark Mode");
         }
+
+        int backgroundColor = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            backgroundColor = getResources().getColor(isDarkModeEnabled  ? R.color.dark_background_color : R.color.light_background_color, getTheme());
+        }
+        int textColor = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            textColor = getResources().getColor(isDarkModeEnabled  ? R.color.dark_text_color : R.color.light_text_color, getTheme());
+        }
+
+        rootLayout.setBackgroundColor(backgroundColor);
+        userGreeting.setTextColor(textColor);
+        tasksHeader.setTextColor(textColor);
+        tasksRecyclerView.setBackgroundColor(backgroundColor);
+
+        taskAdapter.setDarkModeEnabled(isDarkModeEnabled);
     }
 
     private void loadTasks() {
@@ -116,6 +143,7 @@ public class TasksActivity extends Activity implements TaskAdapter.TaskActionsLi
                     tasks.clear();
                     tasks.addAll(response.body());
                     taskAdapter.notifyDataSetChanged();
+                    taskAdapter.setDarkModeEnabled(isDarkModeEnabled);
                     updateEmptyListMessage();
                     Log.d("TasksActivity", "Tasks loaded successfully: " + tasks.size());
                 } else {
@@ -139,6 +167,7 @@ public class TasksActivity extends Activity implements TaskAdapter.TaskActionsLi
                 if (response.isSuccessful() && response.body() != null) {
                     tasks.add(response.body());
                     taskAdapter.notifyDataSetChanged();
+                    taskAdapter.setDarkModeEnabled(isDarkModeEnabled);
                     updateEmptyListMessage();
                     Log.d("TasksActivity", "Task added: " + response.body().getTitle());
                 } else {
@@ -171,6 +200,7 @@ public class TasksActivity extends Activity implements TaskAdapter.TaskActionsLi
                     if (index >= 0) {
                         tasks.set(index, response.body());
                         taskAdapter.notifyItemChanged(index);
+                        taskAdapter.setDarkModeEnabled(isDarkModeEnabled);
                         Log.d("TasksActivity", "Task updated: " + response.body().getTitle());
                     }
                 } else {
@@ -194,6 +224,7 @@ public class TasksActivity extends Activity implements TaskAdapter.TaskActionsLi
                 if (response.isSuccessful()) {
                     tasks.remove(task);
                     taskAdapter.notifyDataSetChanged();
+                    taskAdapter.setDarkModeEnabled(isDarkModeEnabled);
                     updateEmptyListMessage();
                     Log.d("TasksActivity", "Task deleted: " + task.getTitle());
                 } else {
